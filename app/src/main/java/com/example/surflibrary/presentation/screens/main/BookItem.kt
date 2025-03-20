@@ -24,11 +24,8 @@ import com.example.surflibrary.presentation.ui.theme.SurfLibraryTheme
 fun BookItem (
     modifier: Modifier = Modifier,
     book: BookModel,
-    onBookClick: (bookId: Int) -> Unit
+    onBookClick: (bookId: String) -> Unit
 ) {
-    val title = book.name
-    val author = book.author
-    val imageLink = book.imageLink
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -38,8 +35,7 @@ fun BookItem (
             AsyncImage(
                 model = book.imageLink,
                 contentDescription = "Book image",
-                modifier = Modifier.height(64.dp)
-                    .width(32.dp)
+                modifier = Modifier.fillMaxSize()
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
@@ -48,7 +44,7 @@ fun BookItem (
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = book.author,
+                    text = book.author ?: "Автор неизвестен",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -63,7 +59,7 @@ fun PreviewBookItem() {
         BookItem(
 
             book = BookModel(
-                id = 1,
+                id = "afasfafas",
                 name = "Harry Potter",
                 author = "Rose",
                 description = null,

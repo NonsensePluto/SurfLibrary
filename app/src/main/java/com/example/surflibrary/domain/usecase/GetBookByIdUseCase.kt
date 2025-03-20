@@ -8,6 +8,6 @@ import javax.inject.Inject
 class GetBookByIdUseCase @Inject constructor(
     private val bookRepository: BookRepository
 ) {
-    suspend operator fun invoke(id: Int): OperationResult<BookModel> =
+    suspend operator fun invoke(id: String): OperationResult<BookModel> =
         bookRepository.getBookById(id)
 }

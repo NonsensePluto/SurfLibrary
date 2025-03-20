@@ -37,13 +37,13 @@ fun NavigationGraph(
                         }
                     }
                 },
-                mainViewModel = TODO(),
+
             )
         }
         composable(
             route = Route.BookDetails().routeWithArgs,
             arguments = listOf(navArgument(name = Route.BookDetails.BOOK_ID) {
-                type = NavType.IntType
+                type = NavType.StringType
             })
         ) {
             BooksDetailScreen(

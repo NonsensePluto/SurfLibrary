@@ -9,7 +9,7 @@ sealed class Route {
         val routeWithArgs: String = "$route/{$BOOK_ID}"
     ) : Route() {
 
-        fun getRouteWithArgs(bookId: Int): String = "$route/$bookId"
+        fun getRouteWithArgs(bookId: String): String = "$route/$bookId"
 
         companion object {
             const val BOOK_ID = "bookId"

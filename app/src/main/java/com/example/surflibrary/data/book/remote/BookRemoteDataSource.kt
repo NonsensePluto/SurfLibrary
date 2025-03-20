@@ -13,7 +13,7 @@ class BookRemoteDataSource @Inject constructor(
     suspend fun getAllBooks(query: String): OperationResult<BookResponse> =
         safeApiCall { bookApi.getAllBooks(query) }
 
-    suspend fun getBookById(id: Int): OperationResult<BookItem> =
+    suspend fun getBookById(id: String): OperationResult<BookItem> =
         safeApiCall { bookApi.getBookById(id) }
 
 }

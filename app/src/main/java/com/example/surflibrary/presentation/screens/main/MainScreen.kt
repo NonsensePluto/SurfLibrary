@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -36,15 +37,11 @@ import androidx.compose.foundation.lazy.grid.items
 @Composable
 fun MainScreen(
     modifier: Modifier,
-    onBookClick: (bookId: Int) -> Unit,
+    onBookClick: (bookId: String) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
 
     val state by mainViewModel.uiState.collectAsStateWithLifecycle()
-
-    val errorMessage = state.errorMessage
-
-    val contentModifier = Modifier.fillMaxSize()
 
     var searchQuery by remember { mutableStateOf("") }
 
@@ -54,10 +51,11 @@ fun MainScreen(
         modifier = modifier
     ) {
         SearchBar(
-            modifier = Modifier.fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth()
+                .padding(16.dp)
+                .heightIn(max = if (active) 200.dp else 56.dp) ,
             query = searchQuery,
-            onSearch = { mainViewModel.getAllPosts(searchQuery) } ,
+            onSearch = { mainViewModel.getAllPosts(searchQuery) },
             onQueryChange = { query ->
                 searchQuery = query
                 mainViewModel.getAllPosts(query)
@@ -68,42 +66,47 @@ fun MainScreen(
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") }
 
         ) {
-            when {
-                state.isLoading -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
 
-                state.errorMessage != null -> {
-                    Text(
-                        text = state.errorMessage!!,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+            if (active) {
+                Text("Начните вводить запрос...", modifier = Modifier.padding(16.dp))
+            }
 
-                else -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2), // 2 колонки
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(8.dp)
-                    ) {
-                        items(state.books) { book ->
-                            BookItem(
-                                book = book,
-                                onBookClick = { onBookClick(book.id) } ,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onBookClick(book.id) }
-                                    .padding(16.dp)
-                            )
-                        }
+        }
+        when {
+            state.isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            state.errorMessage != null -> {
+                Text(
+                    text = state.errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2), // 2 колонки
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(state.books) { book ->
+                        BookItem(
+                            book = book,
+                            onBookClick = { onBookClick(book.id) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onBookClick(book.id) }
+                                .padding(16.dp)
+                        )
                     }
                 }
             }

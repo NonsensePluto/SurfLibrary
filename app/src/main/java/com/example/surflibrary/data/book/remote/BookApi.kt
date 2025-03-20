@@ -20,6 +20,6 @@ interface BookApi {
 
     @GET(SEARCH_BY_ID)
     suspend fun getBookById(
-        @Path("id") id: Int
+        @Path("id") id: String
     ): Response<BookItem>
 }

@@ -32,7 +32,7 @@ class BookRepository @Inject constructor(
 //            is OperationResult.Success -> OperationResult.Success(mapper(result.data))
 //        }
 //    }
-    suspend fun getBookById(id: Int): OperationResult<BookModel> {
+    suspend fun getBookById(id: String): OperationResult<BookModel> {
         return when (val result = remoteDataSource.getBookById(id)) {
             is OperationResult.Success -> OperationResult.Success(mapper(result.data))
             is OperationResult.Error -> result
