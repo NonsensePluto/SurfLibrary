@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.surflibrary.data.book.utils.OperationResult
 import com.example.surflibrary.domain.usecase.GetAllBooksUseCase
-import com.example.surflibrary.domain.usecase.GetBookByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

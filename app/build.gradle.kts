@@ -7,7 +7,9 @@ plugins {
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.kotlinKapt)
 }
-
+hilt {
+    enableAggregatingTask = false
+}
 android {
     namespace = "com.example.surflibrary"
     compileSdk = 35
