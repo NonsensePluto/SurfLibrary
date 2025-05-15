@@ -1,17 +1,10 @@
 package com.example.surflibrary.presentation.screens.main
 
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,13 +23,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Scaffold
+import com.example.surflibrary.presentation.screens.books.BookGrid
+import com.example.surflibrary.presentation.screens.navigation_menu.BottomNavigationBar
+import com.example.surflibrary.presentation.screens.utils.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     modifier: Modifier,
-    onBookClick: (bookId: String) -> Unit,
+    onBookClick: (String) -> Unit,
+    onNavigateToFavorites: () -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
 
@@ -47,67 +43,76 @@ fun MainScreen(
 
     var active by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-    ) {
-        SearchBar(
-            modifier = Modifier.fillMaxWidth()
-                .padding(16.dp)
-                .heightIn(max = if (active) 200.dp else 56.dp) ,
-            query = searchQuery,
-            onSearch = { mainViewModel.getAllPosts(searchQuery) },
-            onQueryChange = { query ->
-                searchQuery = query
-                mainViewModel.getAllPosts(query)
-            },
-            active = active,
-            onActiveChange = { active = it },
-            placeholder = { Text("Поиск книг") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") }
+    Scaffold(
+        topBar = {//Установка поля поиска
+            SearchBar(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(16.dp),
+                query = searchQuery,
+                onSearch = {
+                    mainViewModel.getAllBooks(searchQuery)
+                },
+                onQueryChange = { query ->
+                    searchQuery = query
+                    mainViewModel.getAllBooks(query)
+                },
+                active = active,
+                onActiveChange = { active = false },
+                placeholder = { Text("Поиск книг") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") }
+            )
+            {}
+        },
 
-        ) {
+        bottomBar = {//Установка нижнего меню
+//            Row (
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.Absolute.Center
+//            ) {
+//                BottomItem(
+//                    icon = Icons.Default.Search,
+//                    text = "Поиск",
+//                    isSelected = true,
+//                    onClick = {}
+//                )
+//
+//                BottomItem(
+//                    icon = Icons.Default.Favorite,
+//                    text = "Избранное",
+//                    onClick = {}
+//                )
+//            }
 
-            if (active) {
-                Text("Начните вводить запрос...", modifier = Modifier.padding(16.dp))
-            }
-
+            BottomNavigationBar(
+                Screens.SEARCH,
+                onNavigateToSearch = {},
+                onNavigateToFavorites = { onNavigateToFavorites() }
+            )
         }
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+    ) { paddingValues ->
+        Box(//Установка экрана в зависимости от состояния
+            Modifier.fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                state.isLoading -> {
+                        CircularProgressIndicator()
                 }
-            }
 
-            state.errorMessage != null -> {
-                Text(
-                    text = state.errorMessage!!,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+                state.errorMessage != null -> {
+                    Text(
+                        text = state.errorMessage!!,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
 
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2), // 2 колонки
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items(state.books) { book ->
-                        BookItem(
-                            book = book,
-                            onBookClick = { onBookClick(book.id) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onBookClick(book.id) }
-                                .padding(16.dp)
-                        )
-                    }
+                state.books.isEmpty() -> {
+                    Text("Введите книгу для поиска")
+                }
+
+                else -> {
+                    BookGrid(modifier = Modifier, state.books, onBookClick, 2)
                 }
             }
         }

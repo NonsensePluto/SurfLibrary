@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 
     // Настройка плагинов для Hilt
-    alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.hiltAndroid)
 }
 hilt {
     enableAggregatingTask = false
@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,6 +64,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
     //Hilt
     implementation(libs.hilt)
@@ -96,4 +102,5 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+
 }

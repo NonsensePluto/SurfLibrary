@@ -16,4 +16,6 @@ sealed class Route {
         }
     }
 
+    data class FavoritesScreen(val route: String = "favorites") : Route()
+
 }

@@ -19,7 +19,7 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainScreenState())
     val uiState = _uiState.asStateFlow()
 
-    fun getAllPosts(query: String) {
+    fun getAllBooks(query: String) {
         _uiState.update { state ->
             state.copy(
                 isLoading = true

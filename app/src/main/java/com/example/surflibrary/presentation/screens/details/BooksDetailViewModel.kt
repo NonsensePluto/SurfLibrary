@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BooksDetailViewModel @Inject constructor(
     private val getBookByIdUseCase: GetBookByIdUseCase,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(BooksDetailScreenState())
