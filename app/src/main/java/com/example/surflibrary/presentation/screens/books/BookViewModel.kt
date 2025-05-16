@@ -3,6 +3,7 @@ package com.example.surflibrary.presentation.screens.books
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.surflibrary.domain.models.BookModel
+import com.example.surflibrary.domain.usecase.GetFavoriteBookByIdUseCase
 import com.example.surflibrary.domain.usecase.IsFavoriteUseCase
 import com.example.surflibrary.domain.usecase.SwitchFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BookViewModel @Inject constructor(
     private val switchFavoritesUseCase: SwitchFavoritesUseCase,
-    private val isFavoriteUseCase: IsFavoriteUseCase
+    private val isFavoriteUseCase: IsFavoriteUseCase,
+    private val getFavoriteBookByIdUseCase: GetFavoriteBookByIdUseCase
 ) : ViewModel() {
 
     fun switchFavorites(book: BookModel) {
@@ -27,4 +29,6 @@ class BookViewModel @Inject constructor(
     fun loadFavoriteStatus(bookId: String): Flow<Boolean> {
         return isFavoriteUseCase(bookId)
     }
+
+    fun findFavoriteBookById(bookId: String): Flow<BookModel?> = getFavoriteBookByIdUseCase(bookId)
 }

@@ -1,11 +1,9 @@
 package com.example.surflibrary.presentation.screens.details
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -22,16 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.room.util.splitToIntList
 import com.example.surflibrary.presentation.screens.books.BookViewModel
-import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +36,7 @@ fun BooksDetailScreen (
     bookViewModel: BookViewModel = hiltViewModel(),
 ) {
     val state by booksDetailViewModel.uiState.collectAsState()
-    val scrollState = rememberScrollState() // Добавляем состояние прокрутки
+    val scrollState = rememberScrollState()
 
     val isFavorite by state.bookModel?.let { book ->
         bookViewModel.loadFavoriteStatus(book.id)
@@ -78,53 +72,43 @@ fun BooksDetailScreen (
             )
         }
     ) { paddingValues ->
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                state.isLoading -> {
                     CircularProgressIndicator()
                 }
-            }
 
-            state.errorMessage != null -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = state.errorMessage!!,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-
-            else -> {
-                val book = state.bookModel
-                if (book != null) {
-                    Column(
-                        modifier = modifier.fillMaxSize()
-                            .verticalScroll(scrollState)//Прокрутка информации о книге
-                    ) {
-                        BookDetailContent(
-                            book = book,
-                            modifier = Modifier.padding(paddingValues)
+                state.errorMessage != null -> {
+                    if (isFavorite) {
+                        ShowBookDetails(
+                            modifier,
+                            state.bookModel,
+                            scrollState,
+                            paddingValues
+                        )
+                    } else {
+                        Text(
+                            text = state.errorMessage!!,
+                            color = MaterialTheme.colorScheme.error
                         )
                     }
-                } else {
-                    Text(
-                        text = "Данные о книге не найдены",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
+                }
+
+                else -> {
+                    ShowBookDetails(
+                        modifier,
+                        state.bookModel,
+                        scrollState,
+                        paddingValues
                     )
                 }
             }
         }
     }
 }
+

@@ -65,23 +65,6 @@ fun MainScreen(
         },
 
         bottomBar = {//Установка нижнего меню
-//            Row (
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.Absolute.Center
-//            ) {
-//                BottomItem(
-//                    icon = Icons.Default.Search,
-//                    text = "Поиск",
-//                    isSelected = true,
-//                    onClick = {}
-//                )
-//
-//                BottomItem(
-//                    icon = Icons.Default.Favorite,
-//                    text = "Избранное",
-//                    onClick = {}
-//                )
-//            }
 
             BottomNavigationBar(
                 Screens.SEARCH,

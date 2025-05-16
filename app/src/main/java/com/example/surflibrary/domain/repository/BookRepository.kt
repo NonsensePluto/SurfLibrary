@@ -49,9 +49,12 @@ class BookRepository @Inject constructor(
             }
     }
 
-//    fun getFavoriteBookById(id: String): Flow<BookModel?> {
-//        return favoritesBookRepository.findById(id)?.let { bookDataBaseMapper(it) }
-//    }
+    fun findFavoriteBookById(bookId: String): Flow<BookModel?> {
+        return favoritesBookRepository.findById(bookId)
+            .map { favoriteBook ->
+                favoriteBook?.let { bookDataBaseMapper(it) }
+            }
+    }
 
     fun isFavorite(bookId: String): Flow<Boolean> = favoritesBookRepository.isFavorite(bookId)
 }
